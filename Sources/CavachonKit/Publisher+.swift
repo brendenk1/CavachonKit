@@ -1,6 +1,6 @@
 import Combine
 
-extension Publisher {
+public extension Publisher {
     func diff<Element>(
         rightToLeft: Bool = true
     ) -> AnyPublisher<Set<Element>, Never>
