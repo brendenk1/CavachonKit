@@ -3,7 +3,7 @@ import XCTest
 @testable import CavachonKit
 
 final class CavachonKitTests: XCTestCase {
-    var sequenceTest: SequencialProcessor<XCTestExpectation>?
+    var sequenceTest: SequentialProcessor<XCTestExpectation>?
     var tests = Set<AnyCancellable>()
     
     func testAsyncReduce() async {
@@ -29,11 +29,11 @@ final class CavachonKitTests: XCTestCase {
         // Given
         let completeExpectation = XCTestExpectation(description: "The subscription completes.")
         
-        sequenceTest = SequencialProcessor<XCTestExpectation> { expectation in
+        sequenceTest = SequentialProcessor<XCTestExpectation> { expectation in
             try! await Task.sleep(for: .seconds(0.1))
             expectation.fulfill()
-        } onProcessError: { _ in
-            
+        } onProcessError: { _, _ in
+            true
         } onCompletion: {
             completeExpectation.fulfill()
         }

@@ -1,10 +1,16 @@
 import Combine
 import Foundation
 
-public final class SequencialProcessor<T>: Subscriber {
+/// The SequentialProcessor is a subscriber that processes a single output from a publisher before requesting more to process.
+public final class SequentialProcessor<T>: Subscriber {
+    /// Create a new instance
+    /// - Parameters:
+    ///   - processor: A method to perform with the output from a publisher
+    ///   - onProcessError: A method to call if the processing of input fails
+    ///   - onCompletion: A method to indicate that the publisher is in the completed state
     public init(
         processor: @escaping (T) async throws -> Void,
-        onProcessError: @escaping (Error) -> Void,
+        onProcessError: @escaping (T, Error) -> Bool,
         onCompletion: @escaping () -> Void
     )
     {
@@ -15,7 +21,7 @@ public final class SequencialProcessor<T>: Subscriber {
     
     // MARK: - Parameters
     private let onCompletion: () -> Void
-    private let onProcessorError: (Error) -> Void
+    private let onProcessorError: (T, Error) -> Bool
     private let processor: (T) async throws -> Void
     
     // MARK: - Subscriber Conformance
@@ -37,7 +43,11 @@ public final class SequencialProcessor<T>: Subscriber {
                 try await self?.processor(input)
                 self?.subscription?.request(.max(1))
             }
-            catch { self?.onProcessorError(error) }
+            catch {
+                if self?.onProcessorError(input, error) == true {
+                    self?.subscription?.request(.max(1))
+                }
+            }
         }
         return .none
     }
