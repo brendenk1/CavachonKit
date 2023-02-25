@@ -10,6 +10,9 @@ Over time, various projects and circumstances have found me finding common patte
 
 ### Publishers
 
+- <doc:Using-DiffingPublisher>
+- ``DiffingPublisher``
+
 ### Subscribers
 
 - <doc:Using-SequentialProcessor>

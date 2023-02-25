@@ -51,32 +51,64 @@ final class CavachonKitTests: XCTestCase {
         wait(for: [expecationOne, expecationTwo, completeExpectation], timeout: 1.0)
     }
     
-    func testDiffingSets() {
+    func testDiffingPublisher() {
         // Given
-        let left = Just(Set([1, 2]))
-        let right = Just(Set([1, 2, 3]))
+        let left = Set([1, 2])
+        let right = Set([1, 2, 3])
+        let leftOne = [
+            Set([1, 2]),
+            Set([1, 2, 3])
+        ]
+        let rightTwo = [
+            Set([1, 2]),
+            Set([1, 2, 3, 4])
+        ]
         
         // Then
         let expectationOne = XCTestExpectation(description: "Check for added value in right")
+        let expectationOneCollection = XCTestExpectation(description: "Check for added value in right chain")
         let expectationTwo = XCTestExpectation(description: "Check for added value in left")
+        let expectationTwoCollection = XCTestExpectation(description: "Check for added value in left chain")
         
         // Finally
-        left.combineLatest(right)
-            .diff(rightToLeft: true)
+        DiffingPublisher(left, right, rightToLeft: true)
             .sink {
-                XCTAssertEqual($0, [])
+                XCTAssertEqual($0, [3])
                 expectationOne.fulfill()
             }
             .store(in: &tests)
         
-        left.combineLatest(right)
-            .diff(rightToLeft: false)
+        DiffingPublisher(left, right, rightToLeft: false)
             .sink {
-                XCTAssertEqual($0, [3])
+                XCTAssertEqual($0, [])
                 expectationTwo.fulfill()
             }
             .store(in: &tests)
         
-        wait(for: [expectationOne, expectationTwo], timeout: 0.1)
+        Just(leftOne).combineLatest(Just(rightTwo))
+            .map { $0.0.publisher.combineLatest($0.1.publisher) }
+            .switchToLatest()
+            .diff(rightToLeft: true)
+            .collect(2)
+            .sink {
+                XCTAssertEqual([Set([]), Set([4])], $0)
+                expectationOneCollection.fulfill()
+            }
+            .store(in: &tests)
+        
+        Just(leftOne).combineLatest(Just(rightTwo))
+            .map { $0.0.publisher.combineLatest($0.1.publisher) }
+            .switchToLatest()
+            .diff(rightToLeft: false)
+            .collect(2)
+            .sink {
+                XCTAssertEqual([Set([3]), Set([])], $0)
+                expectationTwoCollection.fulfill()
+            }
+            .store(in: &tests)
+        
+        wait(for: [expectationOne, expectationTwo, expectationOneCollection, expectationTwoCollection], timeout: 0.1)
+        
+        
     }
 }
