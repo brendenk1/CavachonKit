@@ -1,3 +1,12 @@
+//
+//  SequentialProcessor.swift
+//
+//
+//  Created by Brenden Konnagan on 2/24/23.
+//
+//  ** GNU AFFERO GENERAL PUBLIC LICENSE Version 3 **
+//
+
 import Combine
 import Foundation
 
