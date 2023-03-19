@@ -108,7 +108,25 @@ final class CavachonKitTests: XCTestCase {
             .store(in: &tests)
         
         wait(for: [expectationOne, expectationTwo, expectationOneCollection, expectationTwoCollection], timeout: 0.1)
+    }
+    
+    // The purpose of this test is to validate sorting logic
+    func testPersonNameComponentsSorting() {
+        // Given
+        let foo = PersonNameComponents(givenName: "Joe", familyName: "Tester")
+        let bar = PersonNameComponents(givenName: "Adam", familyName: "Tester")
+        let fooBar = [foo, bar]
         
+        let fooTwo = PersonNameComponents(givenName: "John", familyName: "Smith")
+        let barTwo = PersonNameComponents(givenName: "Tim", familyName: "Apple")
+        let fooBarTwo = [fooTwo, barTwo]
         
+        // Then
+        let expectedOrder = [bar, foo]
+        let expectedOrderTwo = [barTwo, fooTwo]
+        
+        // Finally
+        XCTAssertEqual(fooBar.sorted(using: PersonNameComparison(order: .forward)), expectedOrder)
+        XCTAssertEqual(fooBarTwo.sorted(using: PersonNameComparison(order: .forward)), expectedOrderTwo)
     }
 }

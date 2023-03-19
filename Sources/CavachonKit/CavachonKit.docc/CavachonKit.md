@@ -14,6 +14,10 @@ Over time, various projects and circumstances have found me finding common patte
 
 ## Topics
 
+### Comparators
+
+- ``PersonNameComparison``
+
 ### Publishers
 
 - <doc:Using-DiffingPublisher>
