@@ -18,6 +18,14 @@ Over time, various projects and circumstances have found me finding common patte
 
 - ``PersonNameComparison``
 
+### Protocols
+
+- <doc:Using-AsyncMonitor-Types>
+- ``AsyncMonitor``
+
+- <doc:Using-Monitor-Types>
+- ``Monitor``
+
 ### Publishers
 
 - <doc:Using-DiffingPublisher>
