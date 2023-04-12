@@ -12,6 +12,8 @@ Over time, various projects and circumstances have found me finding common patte
 
 - A function on Sequence types is provided `asyncReduce(_ : :)` that performs a `reduce` with an asynchronous handler.
 
+- A function on Publisher types that allows for `async` transforms to be applied to the stream.
+
 ## Topics
 
 ### Comparators
